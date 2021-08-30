@@ -27,6 +27,8 @@
 
 #include "resource.h"
 
+#include "BakerInterface.h"
+
 using namespace SampleFramework11;
 using std::wstring;
 
@@ -509,12 +511,26 @@ void BakingLab::Initialize()
     spriteRenderer.Initialize(device);
 
     // Load the scenes
-    for(uint64 i = 0; i < uint64(Scenes::NumValues); ++i)
+    // for(uint64 i = 0; i < uint64(Scenes::NumValues); ++i)
+    // {
+    //     if(GetFileExtension(ScenePaths[i]) == L"meshdata")
+    //         sceneModels[i].CreateFromMeshData(device, ScenePaths[i], true);
+    //     else
+    //         sceneModels[i].CreateWithAssimp(device, ScenePaths[i], true);
+    // }
+
     {
-        if(GetFileExtension(ScenePaths[i]) == L"meshdata")
-            sceneModels[i].CreateFromMeshData(device, ScenePaths[i], true);
-        else
-            sceneModels[i].CreateWithAssimp(device, ScenePaths[i], true);
+        auto& model = sceneModels[0];
+        Scene s;
+        MeshData md;
+        Float3 pos[4] = {
+            Float3(1.f, 0.f, 0.f),
+            Float3(0.f, 0.f, 0.f),
+            Float3(0.f, 0.f, 0.f),
+        };
+        //md.positions.data 
+        s.models.push_back(md);
+        model.CreateFromScene(device, &s, false);
     }
 
     Model& currentModel = sceneModels[AppSettings::CurrentScene.Value()];

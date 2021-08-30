@@ -16,7 +16,9 @@
 #include "..\\Serialization.h"
 
 struct aiMesh;
-
+// From Lua Scene
+struct MeshData;
+struct Scene;
 namespace SampleFramework11
 {
 
@@ -70,6 +72,7 @@ public:
     // Init from loaded files
     void InitFromSDKMesh(ID3D11Device* device, SDKMesh& sdkmesh, uint32 meshIdx, bool generateTangents);
     void InitFromAssimpMesh(ID3D11Device* device, const aiMesh& assimpMesh);
+    void InitFromSceneMesh(ID3D11Device *device, const MeshData& meshdata);
 
     // Procedural generation
     void InitBox(ID3D11Device* device, const Float3& dimensions, const Float3& position,
@@ -165,6 +168,8 @@ public:
     void CreateWithAssimp(ID3D11Device* device, const wchar* fileName, bool forceSRGB = false);
 
     void CreateFromMeshData(ID3D11Device* device, const wchar* fileName, bool forceSRGB = false);
+
+    void CreateFromScene(ID3D11Device *device, const Scene *scene, bool forceSRGB);
 
     // Procedural generation
     void GenerateBoxScene(ID3D11Device* device,
