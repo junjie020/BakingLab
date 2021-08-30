@@ -524,12 +524,63 @@ void BakingLab::Initialize()
         Scene s;
         MeshData md;
         Float3 pos[4] = {
-            Float3(1.f, 0.f, 0.f),
-            Float3(0.f, 0.f, 0.f),
-            Float3(0.f, 0.f, 0.f),
+            Float3(-1.f, 0.f, 1.f),
+            Float3(1.f, 0.f, 1.f),
+            Float3(1.f, 0.f, -1.f),
+            Float3(-1.f, 0.f, -1.f),
         };
-        //md.positions.data 
+
+        Float3 nor[4] = {
+            Float3(0.f, 1.f, 0.f),
+            Float3(0.f, 1.f, 0.f),
+            Float3(0.f, 1.f, 0.f),
+            Float3(0.f, 1.f, 0.f),
+        };
+
+        Float2 tex0[4] = {
+            Float2(0.f, 0.f),
+            Float2(1.f, 0.f),
+            Float2(1.f, 1.f),
+            Float2(0.f, 0.f),
+        };
+
+        Float2 lm_uv[4] = {
+            Float2(0.f, 0.f),
+            Float2(1.f, 0.f),
+            Float2(1.f, 1.f),
+            Float2(0.f, 0.f),
+        };
+
+        auto set_buffer = [](auto &b, auto data, auto type, auto stride, auto offset){
+            b.data = (const char*)data;
+            b.type = type;
+            b.stride = stride, b.offset = offset;
+        };
+        
+        set_buffer(md.positions, pos, BT_Float, 12, 0);
+        set_buffer(md.normals, nor, BT_Float, 12, 0);
+        set_buffer(md.texcoords0, tex0, BT_Float, 8, 0);
+        set_buffer(md.texcoords1, lm_uv, BT_Float, 8, 0);
+
+        set_buffer(md.tangents, nullptr, BT_None, 0, 0);
+        set_buffer(md.bitangents, nullptr, BT_None, 0, 0);
+        md.vertexCount = 4;
+
+        uint16_t indices[6] = {
+            0, 1, 2,
+            2, 3, 0,
+        };
+
+        md.indexCount = 6;
+
+        set_buffer(md.indices, indices, BT_Uint16, 2, 0);
+
+        md.worldmat = Float4x4();
+        md.normalmat = Float4x4();
+        
+        md.materialidx = 0;
         s.models.push_back(md);
+        s.materials.push_back(MaterialData());
         model.CreateFromScene(device, &s, false);
     }
 
