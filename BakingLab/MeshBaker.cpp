@@ -692,6 +692,7 @@ template<typename TBaker> static bool BakeDriver(BakeThreadContext& context, TBa
                 if(texelIdxX >= context.CurrLightMapSize || texelIdxY >= context.CurrLightMapSize)
                     continue;
 
+
                 // Skip if the texel is empty
                 const std::vector<BakePoint>& bakePoints = *context.BakePoints;
                 const BakePoint& bakePoint = bakePoints[texelIdx];
@@ -1735,19 +1736,8 @@ MeshBakerStatus MeshBaker::Update(const Camera& camera, uint32 screenWidth, uint
         }
     }
 
-    if(showGroundTruth)
-    {
-        KillBakeThreads();
-        StartRenderThreads();
-    }
-    else
-    {
-        KillRenderThreads();
-        StartBakeThreads();
-    }
-
     // Change checks common to bake and ground truth
-    if(AppSettings::AreaLightColor.Changed() || AppSettings::AreaLightSize.Changed()
+    if (AppSettings::AreaLightColor.Changed() || AppSettings::AreaLightSize.Changed()
         || AppSettings::AreaLightX.Changed() || AppSettings::AreaLightY.Changed()
         || AppSettings::AreaLightZ.Changed() || AppSettings::EnableAreaLight.Changed()
         || AppSettings::SkyMode.Changed() || AppSettings::EnableSun.Changed()
@@ -1766,7 +1756,7 @@ MeshBakerStatus MeshBaker::Update(const Camera& camera, uint32 screenWidth, uint
     }
 
     // Change checks for baking only
-    if(AppSettings::BakeDirectSunLight.Changed() || AppSettings::BakeDirectAreaLight.Changed()
+    if (AppSettings::BakeDirectSunLight.Changed() || AppSettings::BakeDirectAreaLight.Changed()
         || AppSettings::BakeRussianRouletteDepth.Changed() || AppSettings::BakeRussianRouletteProbability.Changed()
         || AppSettings::MaxBakePathLength.Changed() || AppSettings::SolveMode.Changed())
     {
@@ -1775,7 +1765,7 @@ MeshBakerStatus MeshBaker::Update(const Camera& camera, uint32 screenWidth, uint
     }
 
     // Change checks for ground truth render only
-    if(currCameraPos != camera.Position() || currCameraOrientation != camera.Orientation() || currProj != camera.ProjectionMatrix())
+    if (currCameraPos != camera.Position() || currCameraOrientation != camera.Orientation() || currProj != camera.ProjectionMatrix())
     {
         currCameraPos = camera.Position();
         currCameraOrientation = camera.Orientation();
@@ -1786,7 +1776,7 @@ MeshBakerStatus MeshBaker::Update(const Camera& camera, uint32 screenWidth, uint
         currTile = 0;
     }
 
-    if(AppSettings::EnableNormalMaps.Changed() || AppSettings::EnableDirectLighting.Changed()
+    if (AppSettings::EnableNormalMaps.Changed() || AppSettings::EnableDirectLighting.Changed()
         || AppSettings::EnableIndirectLighting.Changed() || AppSettings::RoughnessScale.Changed()
         || AppSettings::EnableIndirectDiffuse.Changed() || AppSettings::EnableIndirectSpecular.Changed()
         || AppSettings::NormalMapIntensity.Changed() || AppSettings::NumRenderSamples.Changed()
@@ -1802,6 +1792,17 @@ MeshBakerStatus MeshBaker::Update(const Camera& camera, uint32 screenWidth, uint
     {
         InterlockedIncrement64(&renderTag);
         currTile = 0;
+    }
+
+    if(showGroundTruth)
+    {
+        KillBakeThreads();
+        StartRenderThreads();
+    }
+    else
+    {
+        KillRenderThreads();
+        StartBakeThreads();
     }
 
     MeshBakerStatus status;

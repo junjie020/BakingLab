@@ -523,32 +523,52 @@ void BakingLab::Initialize()
         auto& model = sceneModels[0];
         Scene s;
         MeshData md;
-        Float3 pos[4] = {
+        Float3 pos[] = {
             Float3(-1.f, 0.f, 1.f),
             Float3(1.f, 0.f, 1.f),
             Float3(1.f, 0.f, -1.f),
             Float3(-1.f, 0.f, -1.f),
+
+            Float3(-1.f,  1.f, 0.f),
+            Float3(1.f,  1.f, 0.f),
+            Float3(1.f, -1.f, 0.f),
+            Float3(-1.f, -1.f, 0.f),
         };
 
-        Float3 nor[4] = {
+        Float3 nor[] = {
             Float3(0.f, 1.f, 0.f),
             Float3(0.f, 1.f, 0.f),
             Float3(0.f, 1.f, 0.f),
             Float3(0.f, 1.f, 0.f),
+
+            Float3(0.f, 0.f, 1.f),
+            Float3(0.f, 0.f, 1.f),
+            Float3(0.f, 0.f, 1.f),
+            Float3(0.f, 0.f, 1.f),
         };
 
-        Float2 tex0[4] = {
+        Float2 tex0[] = {
             Float2(0.f, 0.f),
             Float2(1.f, 0.f),
             Float2(1.f, 1.f),
-            Float2(0.f, 0.f),
-        };
+            Float2(0.f, 1.f),
 
-        Float2 lm_uv[4] = {
             Float2(0.f, 0.f),
             Float2(1.f, 0.f),
             Float2(1.f, 1.f),
+            Float2(0.f, 1.f),
+        };
+
+        Float2 lm_uv[] = {
             Float2(0.f, 0.f),
+            Float2(1.f, 0.f),
+            Float2(1.f, 1.f),
+            Float2(0.f, 1.f),
+
+            Float2(0.f, 0.f),
+            Float2(1.f, 0.f),
+            Float2(1.f, 1.f),
+            Float2(0.f, 1.f),
         };
 
         auto set_buffer = [](auto &b, auto data, auto type, auto stride, auto offset){
@@ -564,14 +584,17 @@ void BakingLab::Initialize()
 
         set_buffer(md.tangents, nullptr, BT_None, 0, 0);
         set_buffer(md.bitangents, nullptr, BT_None, 0, 0);
-        md.vertexCount = 4;
+        md.vertexCount = 8;
 
-        uint16_t indices[6] = {
+        uint16_t indices[] = {
             0, 1, 2,
             2, 3, 0,
+
+            4, 5, 6,
+            6, 7, 4,
         };
 
-        md.indexCount = 6;
+        md.indexCount = 12;
 
         set_buffer(md.indices, indices, BT_Uint16, 2, 0);
 
@@ -622,6 +645,17 @@ void BakingLab::Initialize()
 
     // Camera setup
     AppSettings::UpdateHorizontalCoords();
+
+    AppSettings::EnableSun.SetValue(true);
+
+    AppSettings::BakeDirectSunLight.SetValue(true);
+    AppSettings::BakeMode.SetValue(BakeModes::Diffuse);
+    AppSettings::BakeDirectAreaLight.SetValue(false);
+    AppSettings::SkyMode.SetValue(SkyModes::Simple);
+
+    AppSettings::EnableIndirectLighting.SetValue(true);
+    AppSettings::EnableIndirectSpecular.SetValue(true);
+    AppSettings::LightMapResolution.SetValue(16);
 }
 
 // Creates all required render targets
